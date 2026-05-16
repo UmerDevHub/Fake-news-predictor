@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import os
+import pickle
 import requests
 from bs4 import BeautifulSoup
 from data_preprocessing import load_data, preprocess_data, clean_text, split_data, detect_outliers, normalize_features
@@ -24,6 +25,11 @@ if not os.path.exists('data/Fake.csv') or not os.path.exists('data/True.csv'):
 
 @st.cache_data
 def load_and_process():
+    data_path = 'data/saved_data.pkl'
+    if os.path.exists(data_path):
+        with open(data_path, 'rb') as f:
+            return pickle.load(f)
+            
     df_raw = load_data()
     df = preprocess_data(df_raw)
     df = create_text_features(df)
@@ -32,11 +38,20 @@ def load_and_process():
     # Normalize numeric features
     numeric_cols = ['text_length', 'word_count', 'avg_word_length', 'uppercase_count']
     df_normalized, scaler = normalize_features(df_clean.copy(), numeric_cols)
+    
+    with open(data_path, 'wb') as f:
+        pickle.dump((df_clean, outlier_stats), f)
+        
     return df_clean, outlier_stats
 
 
 @st.cache_resource
 def build_models(_df):
+    model_path = 'data/saved_models.pkl'
+    if os.path.exists(model_path):
+        with open(model_path, 'rb') as f:
+            return pickle.load(f)
+
     X_train, X_test, y_train, y_test = split_data(_df['clean_text'], _df['label'])
     X_train_tfidf, X_test_tfidf, tfidf = create_tfidf_features(X_train, X_test)
     # Feature Selection using Chi-Squared test
@@ -49,7 +64,12 @@ def build_models(_df):
     )
     # Train models on original TF-IDF features (best performance)
     models = train_all_models(X_train_tfidf, y_train)
-    return models, tfidf, X_test_tfidf, y_test, top_features, explained_var
+    
+    artifacts = (models, tfidf, X_test_tfidf, y_test, top_features, explained_var)
+    with open(model_path, 'wb') as f:
+        pickle.dump(artifacts, f)
+        
+    return artifacts
 
 
 with st.spinner("Loading and processing data..."):
