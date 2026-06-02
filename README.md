@@ -2,6 +2,97 @@
 
 ## Getting Started
 
+- Install dependencies: `pip install -r requirements.txt`
+- Run the app: `streamlit run app.py`
+- Source code is organized under `src/` and the Streamlit entry point is `app.py`
+
+## 🚨 Fake News Detection
+
+A compact, reproducible pipeline for classifying news articles as **Real** or **Fake** using NLP preprocessing, TF‑IDF text features, and classical classifiers (Logistic Regression, Naive Bayes, SVM). Includes a Streamlit UI for exploration and inference.
+
+---
+
+## ✨ Quick Start
+
+1. Create and activate a virtual environment and install deps:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1   # PowerShell
+pip install -r requirements.txt
+```
+
+2. Place your datasets in the `data/` folder:
+
+- `data/Fake.csv` — fake news examples
+- `data/True.csv` — real news examples
+
+3. Run the Streamlit app:
+
+```powershell
+streamlit run app.py
+```
+
+---
+
+## 🔎 What’s Included
+
+- `app.py` — Streamlit UI for EDA, model comparison, and live prediction
+- `src/data_preprocessing.py` — load, clean, and preprocess text
+- `src/feature_engineering.py` — TF‑IDF + engineered numeric/text features
+- `src/model_training.py` — train Logistic Regression, Naive Bayes, SVM
+- `src/model_evaluation.py` — accuracy / precision / recall / F1 and confusion matrix plotting
+
+---
+
+## 📊 How to Get Model Accuracies
+
+Run this small script (or follow the example in the app):
+
+```python
+from src.data_preprocessing import load_data, preprocess_data, split_data
+from src.feature_engineering import create_tfidf_features
+from src.model_training import train_all_models
+from src.model_evaluation import compare_models
+
+df = preprocess_data(load_data())
+X = df['clean_text']; y = df['label']
+X_train, X_test, y_train, y_test = split_data(X, y)
+X_train_tfidf, X_test_tfidf, _ = create_tfidf_features(X_train, X_test)
+models = train_all_models(X_train_tfidf, y_train)
+results = compare_models(models, X_test_tfidf, y_test)
+print(results)
+```
+
+This prints a table with `Accuracy`, `Precision`, `Recall`, and `F1-Score` for each model.
+
+---
+
+## ⚠️ Notes & Best Practices
+
+- Large binary artifacts were removed from the Git history to comply with GitHub limits (100 MB). Do not commit large `.pkl` files; use `git-lfs` if needed.
+- Recommended `.gitignore` entry: `/data/*.pkl`
+- Keep raw CSVs in `data/` locally and do not push large processed artifacts.
+
+---
+
+## 🛠️ Development Tips
+
+- Run unit tests on processing functions after changes to `clean_text()` or feature extraction.
+- Keep models small for quicker iteration — use `max_features` or dimensionality reduction in TF‑IDF.
+
+---
+
+## 📝 License & Contact
+
+- Author: Umer Nisar — umernisar053@gmail.com
+- License: MIT
+
+Feel free to open issues or PRs to improve the pipeline or UI.
+# Fake News Detection System
+
+## Getting Started
+
 
 **Fake News Detection**
 
