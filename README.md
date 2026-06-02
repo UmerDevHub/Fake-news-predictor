@@ -2,9 +2,87 @@
 
 ## Getting Started
 
-- Install dependencies: `pip install -r requirements.txt`
-- Run the app: `streamlit run app.py`
-- Source code is organized under `src/` and the Streamlit entry point is `app.py`
+
+**Fake News Detection**
+
+Detects whether a news article is real or fake using NLP preprocessing, TF‑IDF features, and classical classifiers (Logistic Regression, Naive Bayes, SVM).
+
+**Why This Project**
+- **Purpose:** Provide a reproducible, explainable pipeline for fake-news classification with an interactive Streamlit UI.
+- **Audience:** Data scientists, students, and developers learning NLP classification and model evaluation.
+
+**Contents**
+- **Code:** Core logic lives under [src/](src/). Key modules:
+    - [data_preprocessing.py](src/data_preprocessing.py#L1) — loading, cleaning, encoding, splitting.
+    - [feature_engineering.py](src/feature_engineering.py#L1) — TF‑IDF, text features, feature selection.
+    - [model_training.py](src/model_training.py#L1) — trains Logistic Regression, Naive Bayes, SVM.
+    - [model_evaluation.py](src/model_evaluation.py#L1) — accuracy/precision/recall/F1 and confusion matrix plotting.
+- **UI:** [app.py](app.py#L1) — Streamlit app for EDA, prediction, and model comparison.
+- **Data:** the original CSV sources were `data/Fake.csv` and `data/True.csv` (not committed if large).
+
+**Quick Start**
+1. Create and activate a Python environment (recommended):
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1   # PowerShell
+pip install -r requirements.txt
+```
+
+2. Restore the dataset into the `data/` folder.
+     - If `data/Fake.csv` and `data/True.csv` were removed from the repo (history clean), copy them back into `data/` before running training or evaluation.
+
+3. Run the Streamlit UI locally:
+
+```powershell
+streamlit run app.py
+```
+
+4. Train or evaluate models programmatically (example):
+
+```powershell
+python -c "from src.data_preprocessing import load_data, preprocess_data; df=preprocess_data(load_data()); print(df.shape)"
+```
+
+**Where To Find Accuracies**
+- Model evaluation utilities are in [src/model_evaluation.py](src/model_evaluation.py#L1). Use `compare_models()` to get a DataFrame of accuracies, precision, recall and F1 for trained models.
+
+Example evaluation snippet:
+
+```python
+from src.data_preprocessing import load_data, preprocess_data, split_data
+from src.feature_engineering import create_tfidf_features
+from src.model_training import train_all_models
+from src.model_evaluation import compare_models
+
+df = preprocess_data(load_data())
+X = df['clean_text']; y = df['label']
+X_train, X_test, y_train, y_test = split_data(X, y)
+X_train_tfidf, X_test_tfidf, _ = create_tfidf_features(X_train, X_test)
+models = train_all_models(X_train_tfidf, y_train)
+results = compare_models(models, X_test_tfidf, y_test)
+print(results)
+```
+
+**Notes about large files & Git**
+- Large pickle/artifact files (e.g., `data/saved_data.pkl`) were removed from history to keep the repo under GitHub's 100 MB limit. Use `git-lfs` for large binary artifacts if you need to track them.
+- Add local artifacts to `.gitignore`: `/data/*.pkl`
+
+**Project Structure (summary)**
+- `app.py` — Streamlit entrypoint
+- `requirements.txt` — Python dependencies
+- `src/` — package with preprocessing, features, training, evaluation
+- `data/` — place CSVs here (not tracked if large)
+
+**Development & Contribution**
+- Add tests and small, focused PRs. If you change data processing, include a note about changes to `clean_text()` or `preprocess_data()`.
+
+**Contact & License**
+- Author: Umer Nisar — umernisar053@gmail.com
+- License: MIT (update if different)
+
+Enjoy exploring and improving the fake-news classifier — open an issue or PR for enhancements.
+
 
 ## Phase 1: Problem Definition
 
