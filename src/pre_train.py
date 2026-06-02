@@ -2,9 +2,9 @@ import pickle
 import warnings
 warnings.filterwarnings('ignore')
 
-from data_preprocessing import load_data, preprocess_data, detect_outliers, normalize_features, split_data
-from feature_engineering import create_text_features, create_tfidf_features, select_features_chi2, apply_dimensionality_reduction
-from model_training import train_all_models
+from src.data_preprocessing import load_data, preprocess_data, detect_outliers, normalize_features, split_data
+from src.feature_engineering import create_text_features, create_tfidf_features, select_features_chi2, apply_dimensionality_reduction
+from src.model_training import train_all_models
 
 print("Step 1/3: Loading and cleaning 44,000 articles (This takes a moment)...")
 df_raw = load_data()

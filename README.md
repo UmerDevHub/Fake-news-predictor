@@ -1,5 +1,11 @@
 # Fake News Detection System
 
+## Getting Started
+
+- Install dependencies: `pip install -r requirements.txt`
+- Run the app: `streamlit run app.py`
+- Source code is organized under `src/` and the Streamlit entry point is `app.py`
+
 ## Phase 1: Problem Definition
 
 **Problem Statement:** Detecting whether a news article is Real or Fake using Natural Language Processing and Machine Learning techniques.
